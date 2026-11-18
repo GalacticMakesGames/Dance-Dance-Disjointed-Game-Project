@@ -11,6 +11,8 @@ public class PlayerBodyPartsRotator : MonoBehaviour
 
     [SerializeField] private Vector3 rotationAxis = Vector3.forward;
 
+    public DancePoseSequence dancePoseSequence;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,5 +37,7 @@ public class PlayerBodyPartsRotator : MonoBehaviour
     void RotateBodyPart(float angle)
     {
         transform.Rotate(rotationAxis, angle, Space.Self); // rotate around the body part's pivot point
+
+        dancePoseSequence.CheckGroupAlignment();
     }
 }
