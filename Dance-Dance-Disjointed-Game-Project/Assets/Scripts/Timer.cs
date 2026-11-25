@@ -35,15 +35,24 @@ public class Timer : MonoBehaviour
         {
             currentTime = timerLimit;
             SetTimerText();
-            FailsCounter.instance.LoseLife();
+            //FailsCounter.instance.LoseLife();
 
-            if (failsCounter.livesRemaining <= 0)
+            FailsCounter.instance.AddStrike();
+
+            if (failsCounter.firstStrike == true && failsCounter.secondStrike == true && failsCounter.thirdStrike == true)
             {
                 isGameOver = true;
                 GameOverState();
             }
 
             dancePoseSequence.OnGroupsAligned();
+
+            //if (failsCounter.livesRemaining <= 0)
+            //{
+            //    isGameOver = true;
+            //    GameOverState();
+            //}
+
             //timerText.color = Color.red;
             //enabled = false;
         }

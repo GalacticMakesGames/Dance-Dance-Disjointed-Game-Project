@@ -28,9 +28,44 @@ public class DancePoseSequence : MonoBehaviour
 
     public bool isPoseCompleted = false;
 
+    public ChoreoProgressBar choreoProgressBar;
+
     void Start()
     {
+        DeactivateAllGroups();
+        ShufflePoseGroups();
         ActivateGroup(0);
+    }
+
+    // Turns off all target pose visuals at startup so only the active group shows
+    void DeactivateAllGroups()
+    {
+        foreach (TargetGroup group in poseGroup)
+        {
+            if (group.dancePoseArray == null) continue;
+
+            foreach (TargetPose item in group.dancePoseArray)
+            {
+                if (item.targetPose != null)
+                {
+                    item.targetPose.SetActive(false);
+                }
+            }
+        }
+    }
+
+    // Fisher-Yates shuffle to randomize the order of TargetGroup elements in poseGroup
+    void ShufflePoseGroups()
+    {
+        for (int positionOfArray = 0; positionOfArray < poseGroup.Length; positionOfArray++)
+        {
+            TargetGroup tempGroup = poseGroup[positionOfArray];
+
+            int randomizeArray = Random.Range(0, positionOfArray + 1);
+
+            poseGroup[positionOfArray] = poseGroup[randomizeArray];
+            poseGroup[randomizeArray] = tempGroup;
+        }
     }
 
     // Call this from your player rotation script whenever an object finishes rotating
@@ -73,7 +108,8 @@ public class DancePoseSequence : MonoBehaviour
 
         if (isPoseCompleted == true)
         {
-            ScoreCounter.instance.AddPoint();
+            //ScoreCounter.instance.AddPoint();
+            choreoProgressBar.ChoreoBarFill(1);
         }
 
         foreach (var item in poseGroup[currentGroupIndex].dancePoseArray)
@@ -81,16 +117,16 @@ public class DancePoseSequence : MonoBehaviour
             if (item.targetPose != null) item.targetPose.SetActive(false);
         }
 
-        int nextIndex = currentGroupIndex + 1;
+        currentGroupIndex++;
 
-        if (nextIndex < poseGroup.Length)
+        if (currentGroupIndex < poseGroup.Length)
         {
-            ActivateGroup(nextIndex);
+            ActivateGroup(currentGroupIndex);
         }
         else
         {
-            ActivateGroup(0);
-            Debug.Log("Choreography Complete! No more poses left in array.");
+            //ActivateGroup(0);
+            Debug.Log("Choreography Complete! No more poses left in array. Activate Game Over Screen.");
         }
     }
 
